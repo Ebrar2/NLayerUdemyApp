@@ -2,6 +2,7 @@
 using NLayer.Core.Repositories;
 using NLayer.Core.Services;
 using NLayer.Core.UnitOfWorks;
+using NLayer.Service.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,14 +41,25 @@ namespace NLayer.Service.Services
            return _repository.AnyAsync(expression);
         }
 
+        public IEnumerable<T> GetAll()
+        {
+            return _repository.GetAll().ToList();
+        }
+
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _repository.GetAllAsync().ToListAsync();
+            return await _repository.GetAll().ToListAsync();
         }
 
         public async Task<T> GetByIdAsync(int id)
         {
-            return await _repository.GetByIdAsync(id);
+            var hasProduct = await _repository.GetByIdAsync(id);
+            if(hasProduct==null)
+            {
+                throw new NotFoundException($"{typeof(T).Name}({id}) not found");
+            }
+
+            return  hasProduct;
         }
 
         public async Task RemoveAsync(T entity)

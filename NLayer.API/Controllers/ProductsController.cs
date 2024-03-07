@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NLayer.API.Filter;
 using NLayer.Core.DTOs;
 using NLayer.Core.Models;
 using NLayer.Core.Services;
@@ -37,7 +38,7 @@ namespace NLayer.API.Controllers
             return CreateActionResult(CustomResponseDto<List<ProductDto>>.Success(200, productsDto));
         }
 
-
+        [ServiceFilter(typeof(NotFoundFilter<Product>))]
         // GET /api/products/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -46,14 +47,14 @@ namespace NLayer.API.Controllers
             var productsDto = _mapper.Map<ProductDto>(products);
             return CreateActionResult(CustomResponseDto<ProductDto>.Success(200, productsDto));
         }
-
+        //Eğer productDto da validationa takılırsa metotun içine girmez
         [HttpPost]
         public async Task<IActionResult> Save(ProductSaveDto productDto)
         {
             var product = await _service.AddAsync(_mapper.Map<Product>(productDto));
-            var productDtos = _mapper.Map<ProductDto>(product);
+            var productDtos = _mapper.Map<ProductSaveDto>(product);
 
-            return CreateActionResult(CustomResponseDto<ProductDto>.Success(201, productDtos)); //201 created 
+            return CreateActionResult(CustomResponseDto<ProductSaveDto>.Success(201, productDtos)); //201 created 
 
         }
 

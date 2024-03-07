@@ -7,6 +7,7 @@ using NLayer.Core.UnitOfWorks;
 
 namespace NLayer.Service.Services
 {
+    //try catch blokları mümkün olduğunca service katmanında tanımlanmalı .Az try catch kullanılmalı
     public class ProductService : Service<Product>, IProductService
     {
         private readonly IProductRepository _repository;
