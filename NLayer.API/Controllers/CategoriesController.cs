@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using NLayer.API.Filter;
+﻿using Microsoft.AspNetCore.Mvc;
 using NLayer.Core.DTOs;
 using NLayer.Core.Services;
 
@@ -14,7 +12,7 @@ namespace NLayer.API.Controllers
 
         public CategoriesController(ICategoryService categoryService)
         {
-           _categoryService = categoryService;
+            _categoryService = categoryService;
         }
 
         [HttpGet("[action]/{id}")]
@@ -22,7 +20,7 @@ namespace NLayer.API.Controllers
         {
             return CreateActionResult<CategoryWithProductDto>(await _categoryService.GetCategoryByIdWithProductsAsync(id));
         }
-         
-        
+
+
     }
 }

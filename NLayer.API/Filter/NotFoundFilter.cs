@@ -18,7 +18,7 @@ namespace NLayer.API.Filter
 
         public NotFoundFilter(IService<T> _service)
         {
-            service=_service;
+            service = _service;
         }
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {

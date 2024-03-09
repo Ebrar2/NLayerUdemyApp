@@ -4,7 +4,7 @@ using NLayer.Core.Models;
 
 namespace NLayer.Repository.Configurations
 {
-    internal class CategoryConfiguration:IEntityTypeConfiguration<Category>
+    internal class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {
         public void Configure(EntityTypeBuilder<Category> builder)
         {
@@ -14,8 +14,8 @@ namespace NLayer.Repository.Configurations
 
 
             builder.ToTable("Categories");
-                
+
         }
-        
+
     }
 }

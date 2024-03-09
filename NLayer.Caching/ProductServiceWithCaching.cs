@@ -1,23 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Hosting;
 using NLayer.Core.DTOs;
 using NLayer.Core.Models;
 using NLayer.Core.Repositories;
 using NLayer.Core.Services;
 using NLayer.Core.UnitOfWorks;
 using NLayer.Service.Exceptions;
-using NLayer.Service.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection.PortableExecutable;
-using System.Security.AccessControl;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NLayer.Caching
 {
@@ -30,7 +20,7 @@ namespace NLayer.Caching
     public class ProductServiceWithCaching : IProductService
     {
         //tüm productları tutacağımız cache keyi
-        private const string CacheProductKey="productsCache";
+        private const string CacheProductKey = "productsCache";
         private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
         private readonly IProductRepository _productRepository;
@@ -44,7 +34,7 @@ namespace NLayer.Caching
             _productRepository = productRepository;
             _unitOfWork = unitOfWork;
 
-            if(!_memoryCache.TryGetValue(CacheProductKey,out _))  //belirtilen keye ait cahch varsa true döner.out_ diğerek cachedeki datayı dönmemesini sağlarız
+            if (!_memoryCache.TryGetValue(CacheProductKey, out _))  //belirtilen keye ait cahch varsa true döner.out_ diğerek cachedeki datayı dönmemesini sağlarız
             {
                 memoryCache.Set(CacheProductKey, _productRepository.GetProductsWithCategory().Result);  //UYGUALAMADA CACHE BOŞSA DOLDUR  //RESULT ALINARAK ASENKRON METOT SENKRONA DÖNÜŞTÜRÜLÜR
                 //CONSTRUCTORDA AWAIT KULLANILAMAZ
@@ -53,8 +43,8 @@ namespace NLayer.Caching
 
         public async Task<Product> AddAsync(Product entity)
         {
-           await _productRepository.AddAsync(entity);
-           await _unitOfWork.CommitAsync();
+            await _productRepository.AddAsync(entity);
+            await _unitOfWork.CommitAsync();
             await CacheAllProductsAsync();
             return entity;
         }
@@ -71,30 +61,30 @@ namespace NLayer.Caching
         public async Task<bool> AnyAsync(Expression<Func<Product, bool>> expression)
         {
 
-            var any= await _productRepository.AnyAsync(expression);
-           
+            var any = await _productRepository.AnyAsync(expression);
+
             return any;
         }
-      
+
         public async Task<Product> GetByIdAsync(int id)
         {
-           var product = _memoryCache.Get<List<Product>>(CacheProductKey).FirstOrDefault(x => x.Id == id);
+            var product = _memoryCache.Get<List<Product>>(CacheProductKey).FirstOrDefault(x => x.Id == id);
             if (product == null)
                 throw new NotFoundException($"{typeof(Product).Name}({id}) not found");
             return await Task.FromResult(product);
         }
 
-        public  Task<CustomResponseDto<List<ProductsWithCategoryDto>>> GetProductsWithCategory()
+        public Task<List<ProductsWithCategoryDto>> GetProductsWithCategory()
         {
-            
+
             var products = _memoryCache.Get<IEnumerable<Product>>(CacheProductKey);
-            var productsWithCategoryDto=_mapper.Map<List<ProductsWithCategoryDto>>(products);
-            return Task.FromResult(CustomResponseDto<List<ProductsWithCategoryDto>>.Success(200, productsWithCategoryDto));
+            var productsWithCategoryDto = _mapper.Map<List<ProductsWithCategoryDto>>(products);
+            return Task.FromResult(productsWithCategoryDto);
         }
 
         public async Task RemoveAsync(Product entity)
         {
-             _productRepository.Remove(entity);
+            _productRepository.Remove(entity);
             await _unitOfWork.CommitAsync();
             await CacheAllProductsAsync();
         }
@@ -125,9 +115,9 @@ namespace NLayer.Caching
             _memoryCache.Set(CacheProductKey, await _productRepository.GetAll().ToListAsync());
         }
 
-        public  Task<IEnumerable<Product>> GetAllAsync()
+        public Task<IEnumerable<Product>> GetAllAsync()
         {
-            return  Task.FromResult(_memoryCache.Get<IEnumerable<Product>>(CacheProductKey));
+            return Task.FromResult(_memoryCache.Get<IEnumerable<Product>>(CacheProductKey));
         }
     }
 

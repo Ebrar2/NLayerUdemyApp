@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using NLayer.Caching;
 using NLayer.Core.Repositories;
 using NLayer.Core.Services;
 using NLayer.Core.UnitOfWorks;
@@ -9,7 +8,7 @@ using NLayer.Repository.UnitOfWorks;
 using NLayer.Service.Services;
 using System.Reflection;
 using Module = Autofac.Module;
-namespace NLayer.API.Modules
+namespace NLayer.Web.Modules
 {
     public class RepoServiceModule : Module
     {
@@ -31,7 +30,7 @@ namespace NLayer.API.Modules
             //InstancePerDependcy=>.net core transit:Herhangi bir classın constructorında o interface nerde geçririldiyse her seferinde yeni bir instance oluşturur.
 
             builder.RegisterAssemblyTypes(repoAssembly, serviceAssembly, coreAssembly).Where(x => x.Name.EndsWith("Service")).AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<ProductServiceWithCaching>().As(typeof(IProductService)).InstancePerLifetimeScope();
+            // builder.RegisterType<ProductServiceWithCaching>().As(typeof(IProductService)).InstancePerLifetimeScope();
         }
     }
 }
