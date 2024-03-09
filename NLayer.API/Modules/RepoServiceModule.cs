@@ -31,7 +31,7 @@ namespace NLayer.API.Modules
             //InstancePerDependcy=>.net core transit:Herhangi bir classın constructorında o interface nerde geçririldiyse her seferinde yeni bir instance oluşturur.
 
             builder.RegisterAssemblyTypes(repoAssembly, serviceAssembly, coreAssembly).Where(x => x.Name.EndsWith("Service")).AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<ProductServiceWithCaching>().As(typeof(IProductService)).InstancePerLifetimeScope();
+           // builder.RegisterType<ProductServiceWithCaching>().As(typeof(IProductService)).InstancePerLifetimeScope();
         }
     }
 }
