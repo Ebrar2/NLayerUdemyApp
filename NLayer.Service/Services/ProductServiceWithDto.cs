@@ -30,6 +30,15 @@ namespace NLayer.Service.Services
             return CustomResponseDto<ProductSaveDto>.Success(StatusCodes.Status200OK, product);
         }
 
+        public async Task<CustomResponseDto<List<ProductSaveDto>>> AddRangeAsync(List<ProductSaveDto> dto)
+        {
+            var products = _mapper.Map<List<Product>>(dto);
+            await _productRepository.AddRangeAsync(products);
+            await _unitOfWork.CommitAsync();
+            var productDtos = _mapper.Map<List<ProductSaveDto>>(products);
+            return CustomResponseDto<List<ProductSaveDto>>.Success(StatusCodes.Status200OK, productDtos);
+        }
+
         public async Task<CustomResponseDto<List<ProductsWithCategoryDto>>> GetProductsWithCategory()
         {
             var productsWithCategory = await _productRepository.GetProductsWithCategory();

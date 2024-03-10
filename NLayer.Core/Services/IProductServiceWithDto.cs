@@ -13,5 +13,7 @@ namespace NLayer.Core.Services
         public Task<CustomResponseDto<List<ProductsWithCategoryDto>>> GetProductsWithCategory();
         public Task<CustomResponseDto<NoContentDto>> UpdateAsync(ProductUpdateDto dto);
         public Task<CustomResponseDto<ProductSaveDto>> AddAsync(ProductSaveDto dto);
+        public Task<CustomResponseDto<List<ProductSaveDto>>> AddRangeAsync(List<ProductSaveDto> dto);
+     
     }
 }
